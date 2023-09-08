@@ -1,10 +1,11 @@
 # Generic Data Science Project Outline
 
-## Project Title: [Your Project Title]
+## Project Title: Zillow Property Value Predictions
 
 ### 1. Introduction
-- Briefly describe the problem or objective of the data science project.
-- Explain the importance and relevance of the project within its domain.
+
+In the rapidly evolving real estate market, accurate property valuation holds immense importance for homeowners and property investors alike. This project is dedicated to developing a predictive model for property values of Single Family Properties that underwent transactions during the year 2017. This project holds significant importance as it directly addresses the critical need to provide accurate property values. By predicting properety values, we aim to empower our users with valuable insights, aiding in informed decision-making and enhancing their overall experience on the Zillow platform.
+
 
 ### 2. Goals and Objectives
 - Clearly state the primary goals and objectives of the project.
