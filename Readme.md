@@ -32,19 +32,13 @@ The primary goal of the Zillow Property Value Predictions project is to predict 
         - `prop.fips`
 
 - **Data Preprocessing:**
+    - **Column Renaming:** Certain columns will be renamed for clarity and consistency.
 
-    - **Column Renaming:** We will rename certain columns for clarity and consistency using a function named `rename_zillow`.
+    - **FIPS Code Mapping:** FIPS codes will be mapped to county and state names, enriching the dataset with geographical information.
 
-    - **Data Cleaning:** The `drop_zillow` function will be applied to perform the following tasks:
-        - Drop rows with null values.
-        - Remove rows where the values of either bedrooms or bathrooms are zero.
-        - Drop the `parcelid` and `fips` columns as they are not needed for analysis.
+    - **Data Cleaning:** The dataset will undergo cleaning procedures, including the removal of rows with null values and rows where the values of either bedrooms or bathrooms are zero.
 
-    - **FIPS Code Mapping:** The `fips_map` function will map FIPS codes to county and state names, enriching the dataset with geographical information.
-
-    - **Data Type Conversion:** The `datatype_zillow` function will convert data types for selected columns to integers for consistency in analysis.
-
-    These preprocessing steps will ensure that the dataset is clean, well-structured, and ready for exploratory data analysis and modeling.
+    - **Data Type Conversion:** Selected columns will have their data types converted to integers for consistency in analysis.
 
 ## 4. Exploratory Data Analysis (EDA)
 - **Data Overview:**
