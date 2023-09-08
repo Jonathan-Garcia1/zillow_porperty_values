@@ -6,22 +6,45 @@ In the rapidly evolving real estate market, accurate property valuation holds im
 
 
 ## 2. Goals and Objectives
-- Clearly state the primary goals and objectives of the project.
-- Define what success looks like in measurable terms.
+
+The primary goal of the Zillow Property Value Predictions project is to predict property values accurately. To achieve this goal, we have established the following objectives:
+
+- **Data Collection and Preprocessing:** Gather and clean Zillow property data to create a comprehensive dataset suitable for analysis.
+
+- **Exploratory Data Analysis:** Perform exploratory analysis to identify trends, patterns, and potential correlations related to the value of the properties.
+
+- **Feature Importance Determination:** Employ machine learning techniques to assess the importance of various features in predicting property values, aiding in identifying critical factors.
+
+- **Model Building and Evaluation:** Develop predictive models for property values, compare their performance, and select the most effective one for accurate value prediction.
 
 ## 3. Data Acquisition and Preparation
 - **Data Sources:**
-  - Specify where the data will be obtained (e.g., databases, APIs, files).
-  - Document any relevant data sources, including URLs or paths.
+    The primary source of data for this project is the Zillow database. Data will be obtained via SQL queries, Specifically using the `predictions_2017` and  `properties_2017` tables. 
 
 - **Data Collection:**
-  - Describe the process of collecting raw data.
-  - Mention any data scraping, downloading, or acquisition steps.
+    `predictions_2017` (pred) table to filter properties that underwent transactions in 2017. then left join with the `properties_2017` (prop) table to acquire the following key attributes:
+        - `pred.parcelid`
+        - `prop.bedroomcnt`
+        - `prop.bathroomcnt`
+        - `prop.calculatedfinishedsquarefeet`
+        - `prop.taxvaluedollarcnt`
+        - `prop.yearbuilt`
+        - `prop.fips`
 
 - **Data Preprocessing:**
-  - Address data cleaning, including handling missing values, outliers, and inconsistencies.
-  - Document any data transformations, such as encoding categorical variables.
-  - Explain how new features are engineered or created if applicable.
+
+    - **Column Renaming:** We will rename certain columns for clarity and consistency using a function named `rename_zillow`.
+
+    - **Data Cleaning:** The `drop_zillow` function will be applied to perform the following tasks:
+        - Drop rows with null values.
+        - Remove rows where the values of either bedrooms or bathrooms are zero.
+        - Drop the `parcelid` and `fips` columns as they are not needed for analysis.
+
+    - **FIPS Code Mapping:** The `fips_map` function will map FIPS codes to county and state names, enriching the dataset with geographical information.
+
+    - **Data Type Conversion:** The `datatype_zillow` function will convert data types for selected columns to integers for consistency in analysis.
+
+    These preprocessing steps will ensure that the dataset is clean, well-structured, and ready for exploratory data analysis and modeling.
 
 ## 4. Exploratory Data Analysis (EDA)
 - **Data Overview:**
