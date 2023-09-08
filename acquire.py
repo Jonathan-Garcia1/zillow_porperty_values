@@ -34,10 +34,3 @@ def get_zillow_data():
         # Cache data
         df.to_csv('zillow.csv')
     return df   
-def rename_zillow(df):
-    # Rename the columns
-    df = df.rename(columns = {'bedroomcnt':'bedrooms', 
-                              'bathroomcnt':'bathrooms', 
-                              'calculatedfinishedsquarefeet':'area', 
-                              'taxvaluedollarcnt':'value', 'yearbuilt':'year'})
-    return df
