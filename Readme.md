@@ -1,17 +1,15 @@
-# Generic Data Science Project Outline
+# Zillow Property Value Predictions
 
-## Project Title: Zillow Property Value Predictions
-
-### 1. Introduction
+## 1. Introduction
 
 In the rapidly evolving real estate market, accurate property valuation holds immense importance for homeowners and property investors alike. This project is dedicated to developing a predictive model for property values of Single Family Properties that underwent transactions during the year 2017. This project holds significant importance as it directly addresses the critical need to provide accurate property values. By predicting properety values, we aim to empower our users with valuable insights, aiding in informed decision-making and enhancing their overall experience on the Zillow platform.
 
 
-### 2. Goals and Objectives
+## 2. Goals and Objectives
 - Clearly state the primary goals and objectives of the project.
 - Define what success looks like in measurable terms.
 
-### 3. Data Acquisition and Preparation
+## 3. Data Acquisition and Preparation
 - **Data Sources:**
   - Specify where the data will be obtained (e.g., databases, APIs, files).
   - Document any relevant data sources, including URLs or paths.
@@ -25,7 +23,7 @@ In the rapidly evolving real estate market, accurate property valuation holds im
   - Document any data transformations, such as encoding categorical variables.
   - Explain how new features are engineered or created if applicable.
 
-### 4. Exploratory Data Analysis (EDA)
+## 4. Exploratory Data Analysis (EDA)
 - **Data Overview:**
   - Present a summary of the dataset's characteristics (e.g., size, data types).
   - Mention any initial observations or challenges.
@@ -39,7 +37,7 @@ In the rapidly evolving real estate market, accurate property valuation holds im
   - Identify correlations or relationships between features.
   - Explore potential segments within the data.
 
-### 5. Hypotheses Testing and Initial Questions
+## 5. Hypotheses Testing and Initial Questions
 - **Hypotheses Formulation:**
   - Formulate hypotheses based on EDA insights and domain knowledge.
   - Clearly define null and alternative hypotheses.
@@ -48,7 +46,7 @@ In the rapidly evolving real estate market, accurate property valuation holds im
   - List and address initial questions about the data or problem.
   - Include any overarching questions that guide your analysis.
 
-### 6. Feature Importance and Model Development
+## 6. Feature Importance and Model Development
 - **Feature Selection:**
   - Use EDA and hypotheses testing findings to select relevant features.
   - Explain the criteria for feature selection.
@@ -57,7 +55,7 @@ In the rapidly evolving real estate market, accurate property valuation holds im
   - Develop predictive models using appropriate algorithms (e.g., regression, classification).
   - Document the libraries, frameworks, or tools used for modeling.
 
-### 7. Model Selection and Evaluation
+## 7. Model Selection and Evaluation
 - **Model Comparison:**
   - Compare the performance of multiple models using appropriate metrics.
   - Present results using visualizations or tables.
@@ -66,7 +64,7 @@ In the rapidly evolving real estate market, accurate property valuation holds im
   - Choose the best-performing model based on evaluation metrics and insights.
   - Justify the selection with clear reasoning.
 
-### 8. Model Testing and Generalization
+## 8. Model Testing and Generalization
 - **Model Testing:**
   - Evaluate the selected model's performance on an independent test dataset.
   - Assess its ability to generalize to new, unseen data.
@@ -75,7 +73,7 @@ In the rapidly evolving real estate market, accurate property valuation holds im
   - Interpret model predictions and provide insights into the problem.
   - Discuss the strengths and limitations of the chosen model.
 
-### 9. Conclusion and Recommendations
+## 9. Conclusion and Recommendations
 - **Summary:**
   - Summarize the key findings and insights obtained from the data analysis.
   - Revisit the project's goals and objectives.
