@@ -19,7 +19,10 @@ The primary goal of the Zillow Property Value Predictions project is to predict 
 
 ## 3. Data Acquisition and Preparation
 - **Data Sources:**
-    The primary source of data for this project is the Zillow database. Data will be obtained via SQL queries, Specifically using the `predictions_2017` and  `properties_2017` tables. 
+    1. **Zillow Database:** The primary source of property data will be the Zillow database. Data will be obtained via SQL queries, specifically using the `predictions_2017` and `properties_2017` tables.
+
+    2. **US Census Data:** To enrich our dataset with county and state-level information, we will use US Census data. This data will provide mapping for FIPS codes to county and state names, as the Zillow database does not contain this geographical information.
+
 
 - **Data Collection:**
     `predictions_2017` (pred) table to filter properties that underwent transactions in 2017. then left join with the `properties_2017` (prop) table to acquire the following key attributes:
