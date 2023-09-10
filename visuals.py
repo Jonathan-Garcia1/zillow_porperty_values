@@ -40,11 +40,28 @@ def area_vs_value_plt(df):
     plt.show()
 
 def age_vs_value_plt(df):
-    # Create a new column 'decade' by binning 'year' into decades
-    df['decade'] = (df['year'] // 10) * 10
+    """
+    Create a box plot to visualize the relationship between the decade a property was built and its property value.
 
+    Parameters:
+    df (DataFrame): The input DataFrame containing property data, including 'year' and 'value' columns.
+
+    Returns:
+    None: This function generates and displays the box plot but does not return any values.
+
+    Example usage:
+    age_vs_value_plt(your_dataframe)
+    """
+
+    # Create a copy of the DataFrame to avoid modifying the original
+    df_copy = df.copy()
+    
+    # Create a new column 'decade' by binning 'year' into decades
+    df_copy['decade'] = (df_copy['year'] // 10) * 10
+    
+    # Create the plot using the 'decade' column
     plt.figure(figsize=(10, 6))
-    sns.boxplot(x='decade', y='value', data=df, showfliers = False, color= '#1f77b4')
+    sns.boxplot(x='decade', y='value', data=df_copy, showfliers=False, color='#1f77b4')
     plt.xlabel('Decade Built')
     plt.ylabel('Property Value')
     plt.title('Property Age vs. Property Value')
@@ -54,7 +71,7 @@ def age_vs_value_plt(df):
     plt.xlim(0.5, 14.5)  # xlim for bedrooms
 
     # Format the y-axis labels to display in millions (M) or thousands (K)
-    plt.gca().yaxis.set_major_formatter(mtick.FuncFormatter(lambda x, _: '${:.1f}M'.format(x / 1e6)))   
+    plt.gca().yaxis.set_major_formatter(mtick.FuncFormatter(lambda x, _: '${:.1f}M'.format(x / 1e6)))
     plt.gca().spines['top'].set_visible(False)
     plt.gca().spines['right'].set_visible(False)
     
