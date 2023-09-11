@@ -7,7 +7,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import PolynomialFeatures
 
-from explore_plus import features, hot_encode
+from explore_plus import features, hot_encode, cat_ava
 
 from math import sqrt
 
@@ -100,9 +100,17 @@ def xy_split(df):
     # Split the dataset into feature columns (X) and target column (y)
     return df.drop(columns=['value']), df.value
 
+def plus(df):
+    df = cat_ava(df)
+    df = df[(df['group_value'] != 'top 1%') & (df['group_value'] != 'bottom 1%')]
+    df.drop(columns=['group_value'], inplace=True)
+    df.drop(columns=['age_group'], inplace=True)
+    df.drop(columns=['size_group'], inplace=True)
+
 def data_pipeline(df):
     #df.drop(columns=['county','state'], inplace=True)
     df = features(df)
+    df = plus(df)
     train, val, test = split_scale_tvt(df)
     train = hot_encode(train)
     val = hot_encode(train)

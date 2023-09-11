@@ -248,6 +248,26 @@ def simple_features(df):
     return df
 
 
+def categorize_col(df, target_column):
+    # Find percentiles for the target column
+    percentiles = df[target_column].quantile([0.01, 0.05, 0.10, 0.20, 0.25, 0.75, 0.80, 0.90, 0.95, 0.99])
+    
+    # Define the bins and labels
+    bins = [0] + list(percentiles) + [df[target_column].max()]
+    labels = ['bottom 1%', 'bottom 5%', 'bottom 10%', 'bottom 20%', 'bottom 25%',
+              'middle 50%', 'top 25%', 'top 20%', 'top 10%', 'top 5%', 'top 1%']
+
+    # Create a new column based on the percentiles
+    df[f'group_{target_column}'] = pd.cut(df[target_column], bins=bins, labels=labels)
+    
+    return df
+
+def cat_ava(df):
+    df = categorize_col(df, 'value')
+    df = categorize_col(df, 'area')
+    df = categorize_col(df, 'age')
+    return df
+
 def age_group(df):
     """
     Create an 'age_group' column in the DataFrame based on age categories.
