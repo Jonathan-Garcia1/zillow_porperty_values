@@ -101,7 +101,8 @@ def data_pipeline(df):
     train, val, test = split_scale_tvt(df)
     X_train, y_train = xy_split(train)
     X_val, y_val = xy_split(val)
-    return train, val, test, X_train, y_train, X_val, y_val
+    X_test, y_test = xy_split(test)
+    return train, val, test, X_train, y_train, X_val, y_val, X_test, y_test
 
 # def build_baselines(y_train):
 #     baselines = pd.DataFrame({'y_actual': y_train,
@@ -211,11 +212,50 @@ def train_model(model_name, X_train, y_train, X_val, y_val, model_results=None):
     return model_results
 
 
-def poly_features(X_train, X_val):
+def poly_features(X_train, X_val, X_test):
     poly = PolynomialFeatures()
     X_train = poly.fit_transform(X_train)
     X_val = poly.transform(X_val)
-    return X_train, X_val
+    X_test = poly.transform(X_test)
+    return X_train, X_val, X_test
+
+
+def test_model(model_name, X_train, y_train, X_test, y_test, model_results=None):
+    """
+    Train a machine learning model and evaluate its performance on both training and validation sets.
+
+    Parameters:
+    model_name: A function that returns an instance of the machine learning model.
+    X_train (DataFrame): Feature matrix for training data.
+    y_train (Series): Target vector for training data.
+    X_val (DataFrame): Feature matrix for validation data.
+    y_val (Series): Target vector for validation data.
+    model_results (DataFrame, optional): Existing DataFrame to store results.
+
+    Returns:
+    model: Trained machine learning model.
+    model_results: Updated DataFrame containing model name and RMSE results.
+    """
+    # Fit the model on the training data
+    model = model_name()
+    model.fit(X_train, y_train)
+    
+    # # Make predictions on the training set
+    # train_preds = model.predict(X_train)
+    
+    # # Calculate RMSE on the training set
+    # train_rmse = eval_model(y_train, train_preds)
+    
+    # Make predictions on the validation set
+    test_preds = model.predict(X_test)
+    
+    # Calculate RMSE on the validation set
+    test_rmse = eval_model(y_test, test_preds)
+    
+    # Print RMSE values for training and validation sets (formatted)
+    test_rmse_formatted = "${:,.2f}".format(test_rmse)
+    #print(f'The train RMSE is {train_rmse_formatted}.')
+    print(f'The test RMSE is {test_rmse_formatted}.')
 
 
 
