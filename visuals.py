@@ -1,3 +1,7 @@
+import numpy as np
+import pandas as pd
+from scipy import stats
+
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 import seaborn as sns
@@ -86,6 +90,62 @@ def area_vs_value_plt(df):
     # Show the plot
     plt.show()
 
+
+def area_vs_value_trend_plt(df):
+    """
+    Create a scatter plot with a trend line to visualize the relationship between property size and property value.
+
+    Parameters:
+        df (pd.DataFrame): The DataFrame containing property size and property value data to be plotted.
+
+    Returns:
+        None
+
+    Note:
+        - The function creates a scatter plot to show how property size (in square feet) relates to property value.
+        - It sets appropriate labels and titles for the plot.
+        - The x-axis is limited to property sizes up to 12,000 square feet, and the y-axis is limited to property values
+          up to $4.5 million.
+        - The y-axis values are formatted to display property values in millions (e.g., $1.0M).
+        - The top and right spines of the plot are removed for a cleaner appearance.
+    """
+    plt.figure(figsize=(8, 6))
+    
+    # Scatter plot
+    plt.scatter(df['area'], df['value'], alpha=0.5, label='Data Points')
+    
+    # Calculate the linear regression line
+    slope, intercept, r_value, p_value, std_err = stats.linregress(df['area'], df['value'])
+    x_values = np.linspace(0, 12000, 100)
+    y_values = intercept + slope * x_values
+    
+    # Plot the trend line
+    plt.plot(x_values, y_values, color='red', label='Trend Line')
+    
+    plt.xlabel('Property Size (Square Feet)')
+    plt.ylabel('Property Value')
+    plt.title('Property Size vs. Property Value')
+    plt.grid(False)
+
+    # Set x-axis limits for property size
+    plt.xlim(0, 12000)
+    
+    # Set y-axis limits for property value
+    plt.ylim(0, 4500000)
+    
+    # Format the y-axis to display property values in millions
+    plt.gca().yaxis.set_major_formatter(mtick.FuncFormatter(lambda x, _: '${:.1f}M'.format(x / 1e6)))
+    
+    # Remove the top and right spines for a cleaner appearance
+    plt.gca().spines['top'].set_visible(False)
+    plt.gca().spines['right'].set_visible(False)
+    
+    # Show legend
+    #plt.legend()
+    
+    # Show the plot
+    plt.show()
+
 # -----------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------
 
@@ -159,7 +219,7 @@ def bedr_vs_value_plt(df):
     """
     plt.figure(figsize=(10, 6))
 
-    sns.barplot(x='bedrooms', y='value', data=df, color='#1f77b4') 
+    sns.barplot(x='bedrooms', y='value', data=df, color='#1f77b4', yerr=None) 
     plt.xlabel('Number of Bedrooms')
     plt.ylabel('Property Value')
     plt.title('Number of Bedrooms vs. Property Value')
@@ -202,7 +262,7 @@ def bathr_vs_value_plt(df):
     """
     plt.figure(figsize=(10, 6))
 
-    sns.barplot(x='bathrooms', y='value', data=df, color='#1f77b4') 
+    sns.barplot(x='bathrooms', y='value', data=df, color='#1f77b4', yerr=None)
     plt.xlabel('Number of Bathrooms')
     plt.ylabel('Property Value')
     plt.title('Number of Bathrooms vs. Property Value')
@@ -249,7 +309,7 @@ def county_vs_value_plt(df):
     plt.xlabel('County')
     plt.ylabel('Property Value')
     plt.title('County vs. Property Value (Box Plot)')
-    plt.xticks(rotation=45)
+    #plt.xticks(rotation=45)
     plt.grid(False)
 
     # Format the y-axis tick labels as dollars with millions

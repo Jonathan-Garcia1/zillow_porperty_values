@@ -28,9 +28,9 @@ def perform_spearmanr_test(df, col_name):
     r, p = spearmanr(df[col_name], df['value'])
     
     if p < 0.05:
-        print(f"Result: There is a significant monotonic relationship between {col_name} and value (p-value={p}).")
+        print(f"Result: There is a significant monotonic relationship between {col_name} and value (p-value={p:.4f}, r-value={r:.4f}).")
     else:
-        print(f"Result: There is no significant monotonic relationship between {col_name} and value (p-value={p}).")
+        print(f"Result: There is no significant monotonic relationship between {col_name} and value (p-value={p:.4f}, r-value={r:.4f}).")
 
 # -----------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------
