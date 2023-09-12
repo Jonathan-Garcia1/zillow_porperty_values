@@ -32,7 +32,8 @@ def perform_spearmanr_test(df, col_name):
     else:
         print(f"Result: There is no significant monotonic relationship between {col_name} and value (p-value={p}).")
 
-
+# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
 
 def kbest_features(df, col_name, k=2):
     """
@@ -84,6 +85,9 @@ def kbest_features(df, col_name, k=2):
     
     return selected_df
 
+# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
+
 def rfe_features(df, col_name, n_features=3):
     """
     Selects a specified number of features from a DataFrame using Linear Regression and RFE.
@@ -125,6 +129,8 @@ def rfe_features(df, col_name, n_features=3):
     
     return selected_df
 
+# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
 
 def lasso_features(df, col_name, k=2):
     """
@@ -151,7 +157,7 @@ def lasso_features(df, col_name, k=2):
     X = X.select_dtypes(include=['number', 'float'])
     
     # Initialize LASSO regression with alpha=1.0 (adjust as needed)
-    lasso = Lasso(alpha=1.0)
+    lasso = Lasso(alpha=0.5, max_iter=100000)
     
     # Fit LASSO on X and y
     lasso.fit(X, y)
@@ -175,6 +181,8 @@ def lasso_features(df, col_name, k=2):
     
     return selected_df
 
+# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
 
 def feature_selections_results(df, col_name, k=2):
     """
@@ -196,21 +204,59 @@ def feature_selections_results(df, col_name, k=2):
     
     return final_selected_df
 
+# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
+
 def MinMax_Scaler(df):
-    
+    """
+    Apply Min-Max scaling to selected columns of a DataFrame.
+
+    Parameters:
+        df (pd.DataFrame): The DataFrame containing the columns to be scaled.
+
+    Returns:
+        pd.DataFrame: The DataFrame with specified columns scaled using Min-Max scaling.
+
+    Note:
+        - The function applies Min-Max scaling to numeric columns (float or int) in the DataFrame.
+        - The 'value' column is excluded from scaling.
+        - The selected columns are scaled to the range [0, 1].
+    """
     mms = MinMaxScaler()
 
+    # Select columns to scale (excluding 'value')
     to_scale = df.select_dtypes(include=['float', 'int']).columns.tolist()
+    to_scale.remove('value')
 
+    # Apply Min-Max scaling to the selected columns
     df[to_scale] = mms.fit_transform(df[to_scale])
     
     return df
 
+# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
+
 def hot_encode(df):
+    """
+    Perform one-hot encoding on a DataFrame.
+
+    Parameters:
+        df (pd.DataFrame): The DataFrame containing categorical columns to be one-hot encoded.
+
+    Returns:
+        pd.DataFrame: The DataFrame with categorical columns converted to one-hot encoded columns.
+
+    Note:
+        - The function uses pd.get_dummies to perform one-hot encoding on the specified DataFrame.
+        - All categorical columns are one-hot encoded without dropping the first category (drop_first=False).
+    """
     # Use pd.get_dummies to one-hot encode the DataFrame
     df = pd.get_dummies(df, drop_first=False)
     
     return df
+
+# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
 
 
 def simple_features(df):
@@ -247,26 +293,40 @@ def simple_features(df):
 
     return df
 
+# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
 
 def categorize_col(df, target_column):
+    """
+    Categorize values in a DataFrame column based on percentiles.
+
+    Parameters:
+        df (pd.DataFrame): The DataFrame containing the target column to be categorized.
+        target_column (str): The name of the column to be categorized.
+
+    Returns:
+        pd.DataFrame: The DataFrame with a new categorical column based on percentiles.
+
+    Note:
+        - The function calculates percentiles for the specified target column.
+        - It defines bins and labels for categorization based on percentiles.
+        - A new categorical column is created in the DataFrame to represent the categorization.
+    """
     # Find percentiles for the target column
     percentiles = df[target_column].quantile([0.01, 0.05, 0.10, 0.20, 0.25, 0.75, 0.80, 0.90, 0.95, 0.99])
     
     # Define the bins and labels
     bins = [0] + list(percentiles) + [df[target_column].max()]
-    labels = ['bottom 1%', 'bottom 5%', 'bottom 10%', 'bottom 20%', 'bottom 25%',
-              'middle 50%', 'top 25%', 'top 20%', 'top 10%', 'top 5%', 'top 1%']
+    labels = ['bottom_1%', 'bottom_5%', 'bottom_10%', 'bottom_20%', 'bottom_25%',
+              'middle_50%', 'top_25%', 'top_20%', 'top_10%', 'top_5%', 'top_1%']
 
     # Create a new column based on the percentiles
     df[f'group_{target_column}'] = pd.cut(df[target_column], bins=bins, labels=labels)
     
     return df
 
-def cat_ava(df):
-    df = categorize_col(df, 'value')
-    df = categorize_col(df, 'area')
-    df = categorize_col(df, 'age')
-    return df
+# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
 
 def age_group(df):
     """
@@ -291,6 +351,8 @@ def age_group(df):
 
     return df
 
+# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
 
 def size_group(df):
     """
@@ -317,6 +379,8 @@ def size_group(df):
     
     return df
 
+# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
 
 def features(df):
     """
@@ -334,7 +398,9 @@ def features(df):
     pd.DataFrame: The DataFrame with the added features.
     """
     df = simple_features(df)
-    df = age_group(df)
-    df = size_group(df)
+    df = categorize_col(df, 'area')
+    df = categorize_col(df, 'age')
+    # df = age_group(df)
+    # df = size_group(df)
     
     return df
