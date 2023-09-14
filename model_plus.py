@@ -134,6 +134,30 @@ def data_pipeline(df):
 # -----------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------
 
+def data_pipeline_fix(df):
+    #df.drop(columns=['county','state'], inplace=True)
+    df = features(df)
+    df = df.drop(columns=['year', 'county', 'state', 'bath_bdrm_ratio', 'group_area', 'group_age']) 
+    # bedrooms	bathrooms area age year	county	state	total_rooms	age	bdrm_area_ratio	bath_bdrm_ratio	group_area	group_age
+    df = df[(df['bedrooms'] <= 6)]
+    df = df[(df['bathrooms'] <= 6)]
+    df = df[(df['area'] >=699)]
+    df = df[(df['area'] <=5500)]
+    #df = df[(df['age'] <=114)]
+    df = df[(df['bdrm_area_ratio'] <=2000)] 
+    df = df[(df['bdrm_area_ratio'] >=100)] 
+    train, val, test = split_train_val_test(df)
+    train, val, test = scale_train_val_test(train, val, test)
+    train = hot_encode(train)
+    val = hot_encode(train)
+    test = hot_encode(train)
+    X_train, y_train = xy_split(train)
+    X_val, y_val = xy_split(val)
+    X_test, y_test = xy_split(test)
+    return train, val, test, X_train, y_train, X_val, y_val, X_test, y_test
+
+# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
 # def build_baselines(y_train):
 #     baselines = pd.DataFrame({'y_actual': y_train,
 #                           'y_mean': y_train.mean()})
@@ -310,7 +334,7 @@ def poly_features(X_train, X_val, X_test):
 # -----------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------
 
-def test_model(model, X_train, y_train, X_test, y_test, model_results=None):
+def test_model(model, X_test, y_test, model_results=None):
     """
     Train a machine learning model and evaluate its performance on both training and validation sets.
 
@@ -337,13 +361,21 @@ def test_model(model, X_train, y_train, X_test, y_test, model_results=None):
     # # Calculate RMSE on the training set
     # train_rmse = eval_model(y_train, train_preds)
     
-    # Make predictions on the validation set
+    # Make predictions on the test set
     test_preds = model.predict(X_test)
     
-    # Calculate RMSE on the validation set
+    # Calculate RMSE on the test set
     test_rmse = eval_model(y_test, test_preds)
     
     # Print RMSE values for training and validation sets (formatted)
     test_rmse_formatted = "${:,.2f}".format(test_rmse)
     #print(f'The train RMSE is {train_rmse_formatted}.')
     print(f'The test RMSE is {test_rmse_formatted}.')
+    
+    # Extract the name of the model class without the module path
+    model_name = model.__class__.__name__
+    
+    # Update the model results DataFrame
+    model_results = update_model_results(model_name, test_rmse_formatted, "", model_results)
+    
+    return model_results

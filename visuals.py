@@ -33,7 +33,7 @@ def plot_value_distribution(df):
     plt.xlim(0, 3000000)
     
     # Set y-axis limits for property value
-    plt.ylim(0, 8000)
+    plt.ylim(0, 6000)
     
     # Format the x-axis to display property values in millions
     plt.gca().xaxis.set_major_formatter(mtick.FuncFormatter(lambda x, _: '${:.1f}M'.format(x / 1e6)))
@@ -82,6 +82,8 @@ def area_vs_value_plt(df):
     
     # Format the y-axis to display property values in millions
     plt.gca().yaxis.set_major_formatter(mtick.FuncFormatter(lambda x, _: '${:.1f}M'.format(x / 1e6)))
+    
+    plt.gca().xaxis.set_major_formatter(mtick.FuncFormatter(lambda x, _: '${:.0f}K'.format(x / 1e3)))
     
     # Remove the top and right spines for a cleaner appearance
     plt.gca().spines['top'].set_visible(False)
@@ -136,6 +138,8 @@ def area_vs_value_trend_plt(df):
     # Format the y-axis to display property values in millions
     plt.gca().yaxis.set_major_formatter(mtick.FuncFormatter(lambda x, _: '${:.1f}M'.format(x / 1e6)))
     
+    plt.gca().xaxis.set_major_formatter(mtick.FuncFormatter(lambda x, _: '${:.0f}K'.format(x / 1e3)))
+    
     # Remove the top and right spines for a cleaner appearance
     plt.gca().spines['top'].set_visible(False)
     plt.gca().spines['right'].set_visible(False)
@@ -150,8 +154,9 @@ def area_vs_value_trend_plt(df):
 # -----------------------------------------------------------------------------------------------
 
 def age_vs_value_plt(df):
+#def age_vs_value_bar_chart(df):
     """
-    Create a box plot to visualize the relationship between property age (by decade) and property value.
+    Create a bar chart to visualize the relationship between property age (by decade) and property value.
 
     Parameters:
         df (pd.DataFrame): The DataFrame containing property age and property value data to be plotted.
@@ -160,10 +165,9 @@ def age_vs_value_plt(df):
         None
 
     Note:
-        - The function creates a box plot to show how the age of properties (by decade) relates to property value.
+        - The function creates a bar chart to show how the age of properties (by decade) relates to property value.
         - It sets appropriate labels and titles for the plot.
         - The x-axis represents property decades, and the y-axis represents property values.
-        - Outliers are not shown on the plot (showfliers=False).
         - The y-axis values are formatted to display property values in millions (e.g., $1.0M).
         - The top and right spines of the plot are removed for a cleaner appearance.
     """
@@ -172,33 +176,34 @@ def age_vs_value_plt(df):
     # Create a new column 'decade' by binning 'year' into decades
     df_copy['decade'] = (df_copy['year'] // 10) * 10
     
-    # Create the plot using the 'decade' column
+    # Calculate the mean property value for each decade
+    mean_values = df_copy.groupby('decade')['value'].mean()
+    
+    # Create the bar chart
     plt.figure(figsize=(10, 6))
-    sns.boxplot(x='decade', y='value', data=df_copy, showfliers=False, color='#1f77b4')
+    ax = sns.barplot(x=mean_values.index, y=mean_values.values, color='#1f77b4')
     plt.xlabel('Decade Built')
-    plt.ylabel('Property Value')
-    plt.title('Property Age vs. Property Value')
+    plt.title('Average Property Value by Property Age')
     plt.xticks(rotation=45)
     plt.grid(False)
     
-    # Set y-axis limits for property value
-    plt.ylim(0, 3000000)
+    # Remove the y-axis
+    ax.get_yaxis().set_visible(False)
     
-    # Set x-axis limits for decades
-    plt.xlim(0.5, 14.5)
-
-    # Format the y-axis labels to display property values in millions
-    plt.gca().yaxis.set_major_formatter(mtick.FuncFormatter(lambda x, _: '${:.1f}M'.format(x / 1e6)))
+    # Display property values on top of the bars
+    for i, value in enumerate(mean_values):
+        ax.text(i, value, f'${value / 1e6:.1f}M', ha='center', va='bottom', fontsize=10)
     
     # Remove the top and right spines for a cleaner appearance
-    plt.gca().spines['top'].set_visible(False)
-    plt.gca().spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_visible(False)
     
     # Show the plot
     plt.show()
+# -----------------------------------------------------------------------------------------------
 
-# -----------------------------------------------------------------------------------------------
-# -----------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------
 
 def bedr_vs_value_plt(df):
     """
@@ -213,32 +218,34 @@ def bedr_vs_value_plt(df):
     Note:
         - The function creates a bar plot to show how the number of bedrooms relates to property value.
         - It sets appropriate labels and titles for the plot.
-        - The x-axis represents the number of bedrooms, and the y-axis represents property values.
-        - The y-axis values are formatted to display property values in millions (e.g., $1M).
+        - The x-axis represents the number of bedrooms, and property values are displayed on top of the bars.
+        - The y-axis is removed.
         - The top and right spines of the plot are removed for a cleaner appearance.
     """
     plt.figure(figsize=(10, 6))
 
-    sns.barplot(x='bedrooms', y='value', data=df, color='#1f77b4', yerr=None) 
+    # Filter out values above 10 million for homes with 14+ bedrooms
+    df = df[(df['bedrooms'] <= 13)]
+
+    ax = sns.barplot(x='bedrooms', y='value', data=df, color='#1f77b4', errorbar=None)
     plt.xlabel('Number of Bedrooms')
-    plt.ylabel('Property Value')
-    plt.title('Number of Bedrooms vs. Property Value')
+    plt.title('Average Property Value by Bedrooms')
     
-    # Set y-axis limits for property value
-    plt.ylim(0, 10000000)
+    # Remove the y-axis
+    ax.get_yaxis().set_visible(False)
     
-    # Set x-axis limits for bedrooms
-    plt.xlim(-0.5, 11.5)
-    
-    # Format the y-axis labels to display property values in millions
-    plt.gca().yaxis.set_major_formatter(mtick.FuncFormatter(lambda x, _: '${:.0f}M'.format(x / 1e6)))
+    # Display property values on top of the bars
+    for i, value in enumerate(df.groupby('bedrooms')['value'].mean()):
+        ax.text(i, value, f'${value / 1e6:.1f}M', ha='center', va='bottom', fontsize=12)
     
     # Remove the top and right spines for a cleaner appearance
-    plt.gca().spines['top'].set_visible(False)
-    plt.gca().spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_visible(False)
     
     plt.tight_layout()
     plt.show()
+
 
 # -----------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------
@@ -256,29 +263,34 @@ def bathr_vs_value_plt(df):
     Note:
         - The function creates a bar plot to show how the number of bathrooms relates to property value.
         - It sets appropriate labels and titles for the plot.
-        - The x-axis represents the number of bathrooms, and the y-axis represents property values.
-        - The y-axis values are formatted to display property values in millions (e.g., $1M).
+        - The x-axis represents the number of bathrooms, and property values are displayed on top of the bars.
+        - The y-axis is removed.
         - The top and right spines of the plot are removed for a cleaner appearance.
+        - Property values above 10 million for homes with 14+ bathrooms are filtered out.
     """
     plt.figure(figsize=(10, 6))
 
-    sns.barplot(x='bathrooms', y='value', data=df, color='#1f77b4', yerr=None)
+    # Filter out values above 10 million for homes with 14+ bathrooms
+    df = df[(df['bedrooms'] <= 13)]
+
+    # Bin the number of bedrooms by whole numbers
+    df.loc[:, 'bathrooms'] = np.ceil(df['bathrooms']).astype(int)
+
+    ax = sns.barplot(x='bathrooms', y='value', data=df, color='#1f77b4', errorbar=None)
     plt.xlabel('Number of Bathrooms')
-    plt.ylabel('Property Value')
-    plt.title('Number of Bathrooms vs. Property Value')
+    plt.title('Average Property Value by Number of Bathrooms')
     
-    # Set y-axis limits for property value
-    plt.ylim(0, 20000000)
+    # Remove the y-axis
+    ax.get_yaxis().set_visible(False)
     
-    # Set x-axis limits for bathrooms
-    plt.xlim(-0.5, 18.5)
-    
-    # Format the y-axis labels to display property values in millions
-    plt.gca().yaxis.set_major_formatter(mtick.FuncFormatter(lambda x, _: '${:.0f}M'.format(x / 1e6)))
+    # Display property values on top of the bars
+    for i, value in enumerate(df.groupby('bathrooms')['value'].mean()):
+        ax.text(i, value, f'${value / 1e6:.1f}M', ha='center', va='bottom', fontsize=10)
     
     # Remove the top and right spines for a cleaner appearance
-    plt.gca().spines['top'].set_visible(False)
-    plt.gca().spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_visible(False)
     
     plt.tight_layout()
     plt.show()
@@ -288,7 +300,7 @@ def bathr_vs_value_plt(df):
 
 def county_vs_value_plt(df):
     """
-    Create a box plot to visualize the relationship between county and property value.
+    Create a bar chart to visualize the relationship between county and property value.
 
     Parameters:
         df (pd.DataFrame): The DataFrame containing county and property value data to be plotted.
@@ -297,26 +309,36 @@ def county_vs_value_plt(df):
         None
 
     Note:
-        - The function creates a box plot to show how property values vary across different counties.
+        - The function creates a bar chart to show how property values vary across different counties.
         - It sets appropriate labels and titles for the plot.
         - The x-axis represents counties, and the y-axis represents property values.
-        - Outliers are not shown on the plot (showfliers=False).
         - The y-axis values are formatted to display property values in millions (e.g., $1.0M).
         - The top and right spines of the plot are removed for a cleaner appearance.
     """
+    # Define the desired order of counties
     plt.figure(figsize=(10, 6))
-    sns.boxplot(x='county', y='value', data=df, showfliers=False)  # Use sns.boxplot for box plot
-    plt.xlabel('County')
-    plt.ylabel('Property Value')
-    plt.title('County vs. Property Value (Box Plot)')
-    #plt.xticks(rotation=45)
-    plt.grid(False)
 
-    # Format the y-axis tick labels as dollars with millions
-    plt.gca().yaxis.set_major_formatter(mtick.FuncFormatter(lambda x, _: '${:.1f}M'.format(x / 1e6)))
+    # Calculate the mean property value for each county
+    mean_values = df.groupby('county')['value'].mean().reset_index()
+
+    ax = sns.barplot(x='county', y='value', data=mean_values, color='#1f77b4')
+    plt.xlabel('County')
+    plt.ylabel('Average Property Value')
+    plt.title('Average Property Value by County (Bar Chart)')
+
+    # Remove the y-axis
+    ax.get_yaxis().set_visible(False)
+    # Display property values on top of the bars
+    for i, value in enumerate(df.groupby('county')['value'].mean()):
+        ax.text(i, value, f'${value / 1e3:.0f}K', ha='center', va='bottom', fontsize=12)
     
     # Remove the top and right spines for a cleaner appearance
-    plt.gca().spines['top'].set_visible(False)
-    plt.gca().spines['right'].set_visible(False)
-    plt.show()
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    
+    # Rotate x-axis labels if needed
+    plt.xticks(rotation=45)
 
+    plt.tight_layout()
+    plt.show()

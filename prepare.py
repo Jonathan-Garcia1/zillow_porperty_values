@@ -125,6 +125,33 @@ def zillow_pipeline():
 # -----------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------
 
+def prepare_pipeline():
+    """
+    Execute a data processing pipeline for Zillow property data, including data acquisition, transformation,
+    and saving to a CSV file.
+
+    Returns:
+        pd.DataFrame: The processed DataFrame containing Zillow property data.
+
+    Note:
+        - This function calls several other functions in the pipeline to acquire, transform, and save the data.
+        - The processed data is saved to a CSV file named 'zillow_data.csv'.
+    """
+    # Run the data acquisition and transformation steps
+    df = get_zillow_data()
+    df = rename_zillow(df)
+    df = fips_map(df)
+    df = drop_zillow(df)
+    df = datatype_zillow(df)
+    
+    # Save the processed data to a CSV file
+    df.to_csv('zillow_data.csv', index=False)
+
+    return df
+
+# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
+
 def model_pipeline():
     """
     Execute a data processing pipeline for Zillow property data, including data acquisition, transformation,
