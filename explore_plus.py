@@ -11,7 +11,8 @@ from sklearn.linear_model import LinearRegression, Lasso
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 
-from scipy.stats import shapiro, spearmanr
+
+from scipy.stats import shapiro, spearmanr, f_oneway, kruskal
 
 
 def perform_spearmanr_test(df, col_name):
@@ -31,6 +32,56 @@ def perform_spearmanr_test(df, col_name):
         print(f"Result: There is a significant monotonic relationship between {col_name} and value (p-value={p:.4f}, r-value={r:.4f}).")
     else:
         print(f"Result: There is no significant monotonic relationship between {col_name} and value (p-value={p:.4f}, r-value={r:.4f}).")
+
+# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
+
+def perform_anova(df, category_col, value_col, alpha=0.05):
+    # Extract data for each category
+    categories = df[category_col].unique()
+    category_df = [df[df[category_col] == category][value_col] for category in categories]
+
+    # Perform ANOVA test
+    f_statistic, p_value = f_oneway(*category_df)
+    
+    # Print the results
+    print("Analysis of Variance (ANOVA) Test")
+    print("-----------------------------------------------------")
+    
+    # Perform hypothesis testing
+    if p_value < alpha:
+        print("Result: Reject the null hypothesis, There is a significant difference in the mean", category_col, "across different counties.")
+        print("F-statistic:", f'{f_statistic:.4f}')
+        print("P-value:", p_value)
+    else:
+        print("Result: Fail to reject the null hypothesis, There is no significant difference in the mean", category_col, "across different counties.")
+        print("F-statistic:", f'{f_statistic:.4f}')
+        print("P-value:", p_value)
+
+# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
+
+def perform_kruskal(df, category_col, value_col, alpha=0.05):
+    # Extract data for each category
+    categories = df[category_col].unique()
+    category_data = [df[df[category_col] == category][value_col] for category in categories]
+
+    # Perform Kruskal-Wallis test
+    h_statistic, p_value = kruskal(*category_data)
+    
+    # Print the results
+    print("Kruskal-Wallis Test")
+    print("-----------------------------------------------------")
+    
+    # Perform hypothesis testing
+    if p_value < alpha:
+        print("Result: Reject the null hypothesis, There is a significant difference in the distribution of", value_col, "across different", category_col + ".")
+        print("H-statistic:", f'{h_statistic:.4f}')
+        print("P-value:", p_value)
+    else:
+        print("Result: Fail to reject the null hypothesis, There is no significant difference in the distribution of", value_col, "across different", category_col + ".")
+        print("H-statistic:", f'{h_statistic:.4f}')
+        print("P-value:", p_value)
 
 # -----------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------

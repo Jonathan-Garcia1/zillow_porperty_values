@@ -97,7 +97,7 @@ def datatype_zillow(df):
 # -----------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------
 
-def zillow_pipeline():
+def explore_pipeline():
     """
     Execute a data processing pipeline for Zillow property data, including data acquisition, transformation,
     and saving to a CSV file.

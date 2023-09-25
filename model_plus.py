@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import PolynomialFeatures
 
 from explore_plus import features, hot_encode
-
+from prepare import model_pipeline
 from math import sqrt
 
 
@@ -109,32 +109,33 @@ def xy_split(df):
 # -----------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------
 
-def data_pipeline(df):
-    #df.drop(columns=['county','state'], inplace=True)
-    df = features(df)
-    df = df.drop(columns=['year', 'county', 'state', 'bath_bdrm_ratio', 'group_area', 'group_age']) 
-    # bedrooms	bathrooms area age year	county	state	total_rooms	age	bdrm_area_ratio	bath_bdrm_ratio	group_area	group_age
-    train, val, test = split_train_val_test(df)
-    train = train[(train['bedrooms'] <= 6)]
-    train = train[(train['bathrooms'] <= 6)]
-    train = train[(train['area'] >=699)]
-    train = train[(train['area'] <=5500)]
-    #train = train[(train['age'] <=114)]
-    train = train[(train['bdrm_area_ratio'] <=2000)] 
-    train = train[(train['bdrm_area_ratio'] >=100)] 
-    train, val, test = scale_train_val_test(train, val, test)
-    train = hot_encode(train)
-    val = hot_encode(train)
-    test = hot_encode(train)
-    X_train, y_train = xy_split(train)
-    X_val, y_val = xy_split(val)
-    X_test, y_test = xy_split(test)
-    return train, val, test, X_train, y_train, X_val, y_val, X_test, y_test
+# def data_pipeline(df):
+#     #df.drop(columns=['county','state'], inplace=True)
+#     df = features(df)
+#     df = df.drop(columns=['year', 'county', 'state', 'bath_bdrm_ratio', 'group_area', 'group_age']) 
+#     # bedrooms	bathrooms area age year	county	state	total_rooms	age	bdrm_area_ratio	bath_bdrm_ratio	group_area	group_age
+#     train, val, test = split_train_val_test(df)
+#     train = train[(train['bedrooms'] <= 6)]
+#     train = train[(train['bathrooms'] <= 6)]
+#     train = train[(train['area'] >=699)]
+#     train = train[(train['area'] <=5500)]
+#     #train = train[(train['age'] <=114)]
+#     train = train[(train['bdrm_area_ratio'] <=2000)] 
+#     train = train[(train['bdrm_area_ratio'] >=100)] 
+#     train, val, test = scale_train_val_test(train, val, test)
+#     train = hot_encode(train)
+#     val = hot_encode(train)
+#     test = hot_encode(train)
+#     X_train, y_train = xy_split(train)
+#     X_val, y_val = xy_split(val)
+#     X_test, y_test = xy_split(test)
+#     return train, val, test, X_train, y_train, X_val, y_val, X_test, y_test
 
 # -----------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------
 
-def data_pipeline_fix(df):
+def mdata_pipeline(df):
+    df = model_pipeline()
     #df.drop(columns=['county','state'], inplace=True)
     df = features(df)
     df = df.drop(columns=['year', 'county', 'state', 'bath_bdrm_ratio', 'group_area', 'group_age']) 
@@ -154,7 +155,7 @@ def data_pipeline_fix(df):
     X_train, y_train = xy_split(train)
     X_val, y_val = xy_split(val)
     X_test, y_test = xy_split(test)
-    return train, val, test, X_train, y_train, X_val, y_val, X_test, y_test
+    return X_train, y_train, X_val, y_val, X_test, y_test
 
 # -----------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------
@@ -166,7 +167,7 @@ def data_pipeline_fix(df):
 # -----------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------
 
-def eval_baseline(y_train):
+def eval_baseline():
     """
     Evaluate the baseline model's performance using the root mean squared error (RMSE).
 
@@ -181,6 +182,10 @@ def eval_baseline(y_train):
         - It calculates the RMSE between the actual target values and the mean predictions.
         - The RMSE score quantifies the baseline model's performance.
     """
+    df = model_pipeline()
+    train, val, test = split_train_val_test(df)
+    X_train, y_train = xy_split(train)
+    
     baselines = pd.DataFrame({'y_actual': y_train, 'y_mean': y_train.mean()})
     
     return sqrt(mean_squared_error(baselines.y_actual, baselines.y_mean))
