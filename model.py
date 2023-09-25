@@ -9,7 +9,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import PolynomialFeatures
 
-from explore_plus import features, hot_encode
+from explore import features, hot_encode
 from prepare import model_pipeline
 
 
