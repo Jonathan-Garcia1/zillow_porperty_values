@@ -3,13 +3,15 @@ import numpy as np
 import os
 
 from sklearn.metrics import mean_squared_error
+from math import sqrt
+
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import PolynomialFeatures
 
 from explore_plus import features, hot_encode
 from prepare import model_pipeline
-from math import sqrt
+
 
 
 def split_train_val_test(df):
